@@ -1,0 +1,10 @@
+import {NextResponse} from "next/server";
+import {currentAdmin} from "@/lib/auth";
+import {database} from "@/lib/database";
+import {sameOrigin} from "@/lib/security";
+const allowed=new Set(["bio","role","github_url","linkedin_url","seo_title","seo_description","privacy_retention_days","theme_default"]);
+function bad(message:string,status:number){return NextResponse.json({error:message},{status,headers:{"Cache-Control":"no-store"}})}
+function validate(key:unknown,value:unknown){if(typeof key!=="string"||!allowed.has(key))return false;if(key==="privacy_retention_days")return Number.isInteger(value)&&Number(value)>=1&&Number(value)<=365;if(key==="theme_default")return value==="light"||value==="dark";if(typeof value!=="string"||value.length>6000)return false;if(key.endsWith("_url")){try{const url=new URL(value);return url.protocol==="https:"}catch{return false}}return true}
+export async function GET(){if(!await currentAdmin())return bad("Authentication required.",401);try{const {rows}=await database().query("SELECT key,value,updated_at FROM portfolio_settings WHERE key=ANY($1::text[]) ORDER BY key",[[...allowed]]);return NextResponse.json({items:rows},{headers:{"Cache-Control":"no-store"}})}catch{return bad("Could not load settings.",503)}}
+export async function POST(request:Request){if(!sameOrigin(request))return bad("This request could not be accepted.",403);if(!await currentAdmin())return bad("Authentication required.",401);try{const raw=await request.text();if(Buffer.byteLength(raw)>8000)return bad("Request is too large.",413);const input=JSON.parse(raw) as {key?:unknown;value?:unknown};if(!validate(input.key,input.value))return bad("Check the setting and try again.",400);const {rows}=await database().query("INSERT INTO portfolio_settings(key,value) VALUES($1,$2::jsonb) ON CONFLICT(key) DO UPDATE SET value=EXCLUDED.value,updated_at=now() RETURNING key,value,updated_at",[input.key,JSON.stringify(input.value)]);return NextResponse.json({item:rows[0]},{status:201,headers:{"Cache-Control":"no-store"}})}catch{return bad("Could not save the setting.",400)}}
+

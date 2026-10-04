@@ -1,0 +1,12 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getPublicProject } from "@/lib/projects";
+import Reveal from "@/components/reveal";
+type Props = PageProps<"/projects/[slug]">;
+export async function generateMetadata({ params }: Props): Promise<Metadata> { const { slug } = await params; const project = await getPublicProject(slug); return project ? { title: project.title, description: project.summary, robots: { index: !project.placeholder, follow: !project.placeholder } } : {}; }
+export default async function ProjectPage({ params }: Props) {
+  const { slug } = await params; const project = await getPublicProject(slug); if (!project) notFound();
+  return <main className="page-main shell case-study"><Link className="back-link" href="/projects">← All projects</Link><span className="section-kicker">{project.category}{project.placeholder ? " · SAMPLE CONTENT" : " · CASE STUDY"}{project.currentlyBuilding ? " · CURRENTLY BUILDING" : ""}</span><h1>{project.title}<span className="accent-dot">.</span></h1><p className="case-summary">{project.summary}</p>{project.placeholder && <div className="sample-notice"><span>!</span> Sample content — replace with verified project details before publishing.</div>}{project.sections?.length ? project.sections.map((section) => <Reveal as="section" className="case-section" key={section.label}><h2>{section.label}</h2><p>{section.content}</p></Reveal>) : project.details.length > 0 ? <Reveal as="section" className="case-section"><h2>Project notes</h2>{project.details.filter(Boolean).map((detail, index) => <p key={`${index}-${detail}`}>{detail}</p>)}</Reveal> : null}{project.technologies.length > 0 ? <Reveal as="section" className="case-section"><h2>Technologies</h2><div className="focus-tags">{project.technologies.map((technology) => <span key={technology}>{technology}</span>)}</div></Reveal> : project.placeholder ? <p className="editorial-note">Technology details to confirm.</p> : null}{(project.repoUrl || project.demoUrl) && <section className="case-section project-external-links"><h2>Project links</h2>{project.repoUrl && <a className="text-link" href={project.repoUrl} target="_blank" rel="noreferrer">Repository ↗</a>}{project.demoUrl && <a className="text-link" href={project.demoUrl} target="_blank" rel="noreferrer">Live demo ↗</a>}</section>}{project.placeholder && <p className="case-note">Role, timeline, architecture, outcomes, media, and project links are intentionally left out until verified.</p>}</main>;
+}
+

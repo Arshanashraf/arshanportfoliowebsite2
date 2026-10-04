@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function NotFound() { return <main className="page-main shell error-state"><span className="section-kicker">404 / ROUTE NOT FOUND</span><h1>This path isn’t<br/><span>on the map.</span></h1><p>The page may have moved, or it may not be public yet.</p><div><Link className="button button--primary" href="/">Back to home ↗</Link><Link className="text-link" href="/projects">Browse projects</Link></div></main>; }
