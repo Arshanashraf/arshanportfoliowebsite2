@@ -10,8 +10,9 @@ For the full product, UI, architecture, data, security, operations, and launch g
 2. Copy `.env.example` to `.env.local` and set `DATABASE_URL` to a PostgreSQL database and `APP_SECRET` to at least 32 random bytes. No provider is selected in this repository; use a provider whose current terms and free quota fit the intended use.
 3. Run `npm run db:migrate` to create the schema and add the owner-provided project candidates as **draft** sample content.
 4. Run `npm run db:seed-content` to publish the verified projects and the internship entry, and `npm run db:install-resume` to install `docs/cv/Muhammad-Arshan-Ashraf-Siddiqui-Full-Stack-Developer.pdf` as the active résumé. Both scripts are idempotent and read whatever `DATABASE_URL` is set, so they can also be run against a hosted database.
-5. Run `npm run admin:create` in an interactive terminal to create the first owner account. The password is entered without echo. There is no public sign-up. To rotate the password later and revoke all active sessions, run `npm run admin:update`.
-6. Run `npm run dev`.
+5. Run `npm run db:status` to confirm which database you are pointed at and that the schema, content, settings, admin account, and résumé are in place. It prints the host and database it resolved from `DATABASE_URL`.
+6. Run `npm run admin:create` in an interactive terminal to create the first owner account. The password is entered without echo. There is no public sign-up. To rotate the password later and revoke all active sessions, run `npm run admin:update`.
+7. Run `npm run dev`.
 
 If `DATABASE_URL` is not configured, local development shows clearly marked sample project cards. In production, project routes only read published database records. A configured database without published projects shows an empty state.
 

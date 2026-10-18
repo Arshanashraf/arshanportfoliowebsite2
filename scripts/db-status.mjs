@@ -19,7 +19,7 @@ const url = new URL(connectionString);
 const target = `${url.hostname}${url.port ? ":" + url.port : ""}/${url.pathname.replace(/^\//, "")}`;
 const looksLocal = ["localhost", "127.0.0.1", "::1"].includes(url.hostname);
 
-const pool = new pg.Pool({ connectionString, max: 1, connectionTimeoutMillis: 8_000, ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== "false" } : false });
+const pool = new pg.Pool({ connectionString, max: 1, connectionTimeoutMillis: 8_000, ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== "false" } : undefined });
 
 let rows;
 try {

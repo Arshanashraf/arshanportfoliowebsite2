@@ -151,7 +151,7 @@ const EXPERIENCE = {
   sortOrder: 10,
 };
 
-const pool = new pg.Pool({ connectionString, max: 1, connectionTimeoutMillis: 8_000 });
+const pool = new pg.Pool({ connectionString, max: 1, connectionTimeoutMillis: 8_000, ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== "false" } : undefined });
 const client = await pool.connect();
 const summary = { technologies: 0, skillsAdded: 0, skillsPresent: 0, settings: [], projects: [], experience: "unchanged" };
 

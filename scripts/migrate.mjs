@@ -1,10 +1,10 @@
 import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import pg from "pg";
-process.loadEnvFile(".env.local");
+try { process.loadEnvFile(".env.local"); } catch { /* Fall back to the ambient environment. */ }
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) throw new Error("Set DATABASE_URL before running migrations.");
-const pool = new pg.Pool({ connectionString, max: 1, connectionTimeoutMillis: 5_000, idleTimeoutMillis: 5_000 });
+const pool = new pg.Pool({ connectionString, max: 1, connectionTimeoutMillis: 5_000, idleTimeoutMillis: 5_000, ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== "false" } : undefined });
 try {
   const client = await pool.connect();
   try {

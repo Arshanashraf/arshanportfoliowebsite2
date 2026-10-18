@@ -31,7 +31,7 @@ if (bytes.subarray(0, 5).toString("latin1") !== "%PDF-") throw new Error(`${base
 const fileName = basename(sourcePath);
 const storageKey = `${randomUUID()}.pdf`;
 
-const pool = new pg.Pool({ connectionString, max: 1, connectionTimeoutMillis: 8_000 });
+const pool = new pg.Pool({ connectionString, max: 1, connectionTimeoutMillis: 8_000, ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== "false" } : undefined });
 const client = await pool.connect();
 let version;
 try {
