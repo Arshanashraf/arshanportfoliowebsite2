@@ -9,8 +9,9 @@ For the full product, UI, architecture, data, security, operations, and launch g
 1. Use Node.js 20.9 or later and install the locked dependencies with `npm ci`.
 2. Copy `.env.example` to `.env.local` and set `DATABASE_URL` to a PostgreSQL database and `APP_SECRET` to at least 32 random bytes. No provider is selected in this repository; use a provider whose current terms and free quota fit the intended use.
 3. Run `npm run db:migrate` to create the schema and add the owner-provided project candidates as **draft** sample content.
-4. Run `npm run admin:create` in an interactive terminal to create the first owner account. The password is entered without echo. There is no public sign-up. To rotate the password later and revoke all active sessions, run `npm run admin:update`.
-5. Run `npm run dev`.
+4. Run `npm run db:seed-content` to publish the verified projects and the internship entry, and `npm run db:install-resume` to install `docs/cv/Muhammad-Arshan-Ashraf-Siddiqui-Full-Stack-Developer.pdf` as the active résumé. Both scripts are idempotent and read whatever `DATABASE_URL` is set, so they can also be run against a hosted database.
+5. Run `npm run admin:create` in an interactive terminal to create the first owner account. The password is entered without echo. There is no public sign-up. To rotate the password later and revoke all active sessions, run `npm run admin:update`.
+6. Run `npm run dev`.
 
 If `DATABASE_URL` is not configured, local development shows clearly marked sample project cards. In production, project routes only read published database records. A configured database without published projects shows an empty state.
 
@@ -31,7 +32,7 @@ Never commit `.env.local` or database credentials.
 - Projects seeded from the brief are private drafts and visibly marked as samples. No role, date, outcome, or metric is fabricated. Set confidence levels for skills in the dashboard rather than inferring them.
 - The contact form is accepted only after a `privacy_retention_days` value (1–365) is set in **Admin → Settings**. Contact submissions are rate-limited and stored in the admin inbox; no email is sent. Old messages are pruned when a submission arrives or an administrator opens the inbox.
 - Blog authoring accepts plain text and a small safe Markdown subset. Arbitrary HTML is rendered as text, not markup. Draft posts are private.
-- Project/blog media uploads, scheduled publishing, mobile client, analytics, and deployment are intentionally deferred. Résumé PDFs have a separate local persistent-disk workflow. No provider accounts or paid services are provisioned by this repository.
+- Project/blog media uploads, scheduled publishing, mobile client, analytics, and deployment are intentionally deferred. Résumé PDFs are stored in the database, so they survive deploys without a persistent disk. No provider accounts or paid services are provisioned by this repository.
 
 Before launch, choose the hosting and database services, verify their current terms and free quotas against the intended professional use, configure the canonical site URL, review message retention/privacy copy, and replace the draft project content with verified case-study details.
 
@@ -41,8 +42,7 @@ Before launch, choose the hosting and database services, verify their current te
 The public homepage uses a once-per-tab, sub-second Systems Atlas intro; CSS and IntersectionObserver reveals; an owner-data-backed technology marquee and category explorer; and a keyboard/touch project showcase. Abstract technical maps stand in for unavailable project screenshots. Reduced-motion preferences disable the continuous loops and entry motion. No animation package has been added.
 
 The admin now includes `/admin/resume`. The additive `002_resume_and_portfolio_enhancements.sql` migration creates versioned résumé metadata and a single-active constraint, and adds an owner-controlled `currently_building` project flag. Run `npm run db:migrate` to apply both current and future unapplied migrations.
-
-PDFs are validated (signature, MIME/extension, max 8 MB), stored with generated opaque names outside `public/`, and streamed via `/api/resume`; filesystem paths are never returned. `RESUME_STORAGE_DIR` can point at the storage directory; by default it is `./data/resumes`, which is git-ignored. On a server, use a persistent disk and back it up. The local-filesystem adapter is **not suitable for ephemeral/serverless deployments without persistent storage**. Admin upload/list/activate/delete require migration 002 and a configured database. When there is no active readable PDF, public controls direct visitors to Contact.
+PDFs are validated (signature, MIME/extension, max 8 MB), stored with generated opaque names, and streamed via `/api/resume`; storage keys are never returned as paths. The bytes live in PostgreSQL (`resume_files`, created by `003_resume_storage.sql`) rather than on disk, because a serverless host offers no writable filesystem outside `/tmp` and `/tmp` is per-instance. Uploads therefore survive a deploy and remain readable in production, and no `RESUME_STORAGE_DIR` or persistent disk is required. Admin upload/list/activate/delete require migrations 002 and 003 and a configured database. When there is no active readable PDF, public controls direct visitors to Contact.
 
 The owner may mark one project as “Currently building” in its admin form. It appears on the public home page only after it is published and is not marked sample. A unique partial index prevents multiple current projects.
 
@@ -55,4 +55,4 @@ npm run lint
 npm run build
 ```
 
-A database-backed migration or upload was not exercised unless a working `DATABASE_URL` and persistent resume disk are configured.
+A database-backed migration or upload was not exercised unless a working `DATABASE_URL` is configured.

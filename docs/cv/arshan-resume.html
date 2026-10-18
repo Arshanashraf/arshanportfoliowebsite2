@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Muhammad Arshan Ashraf Siddiqui — Full-Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* Print-first resume. Brand: same faces and accent as the portfolio site, but on white
+     paper — a tinted background wastes ink and photographs badly when a recruiter scans it. */
+  @page { size: A4; margin: 12mm 13mm 11mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  :root {
+    --accent: #2b6a56;
+    --ink: #161d1a;
+    --muted: #4f5a55;
+    --soft: #616c66;
+    --line: #d3d8d1;
+    --sans: "Geist", "Segoe UI", Arial, sans-serif;
+    --mono: "Geist Mono", "Cascadia Mono", Consolas, monospace;
+  }
+
+  body {
+    font-family: var(--sans);
+    font-size: 9pt;
+    line-height: 1.33;
+    color: var(--ink);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--ink); text-decoration: none; }
+
+  /* ---------- header ---------- */
+  .head { border-bottom: 2px solid var(--ink); padding-bottom: 6pt; margin-bottom: 8pt; }
+  h1 { font-size: 19pt; font-weight: 600; letter-spacing: -.02em; line-height: 1.08; }
+  .role {
+    font-family: var(--mono); font-size: 8pt; font-weight: 500;
+    letter-spacing: .15em; text-transform: uppercase; color: var(--accent);
+    margin-top: 2pt;
+  }
+  .contact { margin-top: 5pt; font-size: 8.6pt; color: var(--muted); }
+  .contact span { white-space: nowrap; }
+  .contact i { color: var(--line); font-style: normal; padding: 0 4pt; }
+  .contact b { font-weight: 600; color: var(--ink); }
+
+  /* ---------- sections ---------- */
+  section { margin-bottom: 7.5pt; }
+  h2 {
+    font-family: var(--mono); font-size: 8pt; font-weight: 500;
+    letter-spacing: .15em; text-transform: uppercase; color: var(--accent);
+    border-bottom: 1px solid var(--line); padding-bottom: 2.5pt; margin-bottom: 4.5pt;
+  }
+  p.summary { color: var(--muted); text-align: justify; hyphens: none; }
+
+  /* ---------- skills ---------- */
+  .skill { display: flex; gap: 8pt; margin-bottom: 1.6pt; break-inside: avoid; }
+  .skill dt {
+    flex: 0 0 92pt; font-family: var(--mono); font-size: 8pt; font-weight: 500;
+    color: var(--ink); padding-top: .4pt;
+  }
+  .skill dd { flex: 1; color: var(--muted); }
+
+  /* ---------- entries ---------- */
+  .entry { margin-bottom: 5pt; break-inside: avoid; }
+  .entry:last-child { margin-bottom: 0; }
+  .entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8pt; }
+  .entry-title { font-size: 9.8pt; font-weight: 600; }
+  .entry-sub { font-size: 9pt; color: var(--muted); }
+  .entry-when {
+    font-family: var(--mono); font-size: 8pt; color: var(--soft);
+    white-space: nowrap; letter-spacing: .02em;
+  }
+  .stack {
+    font-family: var(--mono); font-size: 8pt; color: var(--accent);
+    margin-top: .5pt; letter-spacing: .01em;
+  }
+  .link {
+    font-family: var(--mono); font-size: 7.6pt; color: var(--soft);
+    letter-spacing: .01em; margin-left: 7pt;
+  }
+  ul { list-style: none; margin-top: 2.5pt; }
+  li { position: relative; padding-left: 8pt; color: var(--muted); margin-bottom: 1pt; }
+  li::before { content: "—"; position: absolute; left: 0; color: var(--line); }
+
+  /* Filled once the real dates are supplied; harmless while drafting. */
+  .todo { color: #b3433d; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<header class="head">
+  <h1>Muhammad Arshan Ashraf Siddiqui</h1>
+  <div class="role">Full-Stack Developer · Real-Time &amp; Event-Driven Systems</div>
+  <div class="contact">
+    <span>Karachi, Pakistan</span><i>|</i>
+    <span>+92 334 3739894</span><i>|</i>
+    <span><b>arshanashraf2002@gmail.com</b></span><br />
+    <span>github.com/Arshanashraf</span><i>|</i>
+    <span>linkedin.com/in/arshan-ashraf-650124288</span>
+  </div>
+</header>
+
+<section>
+  <h2>Professional Summary</h2>
+  <p class="summary">Full-stack developer who builds real-time and event-driven web applications end to end. Comfortable across the stack — React.js interfaces on the front, Node.js and Fastify services behind them — with hands-on work in WebSocket communication, message brokers (Apache Kafka, RabbitMQ), and Docker-based deployment. Focused on writing modular, maintainable code and shipping features that reach production.</p>
+</section>
+
+<section>
+  <h2>Technical Skills</h2>
+  <dl>
+    <div class="skill"><dt>Languages</dt><dd>JavaScript, Python, C++, HTML5, CSS3</dd></div>
+    <div class="skill"><dt>Frontend</dt><dd>React.js, Redux, Tailwind CSS, Bootstrap, responsive design</dd></div>
+    <div class="skill"><dt>Backend</dt><dd>Node.js, Express.js, Fastify, REST APIs, Appwrite</dd></div>
+    <div class="skill"><dt>Databases</dt><dd>MongoDB, MySQL</dd></div>
+    <div class="skill"><dt>Real-Time</dt><dd>WebSockets, Socket.IO, Apache Kafka, RabbitMQ, event-driven architecture</dd></div>
+    <div class="skill"><dt>DevOps &amp; Tools</dt><dd>Docker, Git, GitHub, Postman, VS Code, Chrome DevTools</dd></div>
+    <div class="skill"><dt>AI &amp; APIs</dt><dd>Hugging Face API, AI chatbot development, prompt engineering, REST API integration</dd></div>
+    <div class="skill"><dt>Currently learning</dt><dd>TypeScript, Next.js, LLM integration and retrieval-augmented generation (LangGraph, LlamaIndex, Ollama)</dd></div>
+  </dl>
+</section>
+
+<section>
+  <h2>Experience</h2>
+  <div class="entry">
+    <div class="entry-head">
+      <div>
+        <div class="entry-title">Frontend Developer Intern</div>
+        <div class="entry-sub">DevelopersHub.co — Remote</div>
+      </div>
+      <div class="entry-when">Nov 2024 – Dec 2024</div>
+    </div>
+    <ul>
+      <li>Built responsive UI components in React.js for customer-facing features.</li>
+      <li>Improved application performance and usability across screen sizes.</li>
+      <li>Collaborated on real-world feature work and production deployments.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Projects</h2>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Real-Time Chat Application</div>
+    </div>
+    <div class="stack">Node.js · Fastify · Socket.IO · MongoDB · Docker <span class="link">github.com/Arshanashraf/CRUD-SOCKET.IO</span></div>
+    <ul>
+      <li>Built a real-time chat system using Socket.IO over Node.js and Fastify, with WebSocket-based bidirectional messaging for instant delivery.</li>
+      <li>Persisted conversation history in MongoDB and structured the service into modular layers for maintainability.</li>
+      <li>Containerized the application with Docker so the environment behaves identically in development and deployment.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Kafka-Based CRUD System</div>
+      <div class="entry-when">Dockerized microservice architecture</div>
+    </div>
+    <div class="stack">Node.js · Apache Kafka · Zookeeper · Docker <span class="link">github.com/Arshanashraf/Kafka-crud-docker</span></div>
+    <ul>
+      <li>Built a CRUD backend where services communicate through Apache Kafka topics instead of direct calls, giving an event-driven flow with decoupled producers and consumers.</li>
+      <li>Implemented producer–consumer pipelines for asynchronous data processing and status tracking.</li>
+      <li>Containerized Kafka, Zookeeper, and the application services with Docker for reproducible, scalable deployment.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">ApexBot — AI-Powered Chatbot</div>
+      <div class="entry-when">Deployed</div>
+    </div>
+    <div class="stack">React.js · Vite · Tailwind CSS · Redux · Hugging Face API <span class="link">github.com/Arshanashraf/AI-powered-Apexbot</span></div>
+    <ul>
+      <li>Built an AI chatbot that generates responses through the Hugging Face API, following a modular component-based architecture.</li>
+      <li>Managed conversation state with Redux and deployed the build to Netlify and Hugging Face Spaces.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">E-Commerce Web Application</div>
+      <div class="entry-when">Internship project</div>
+    </div>
+    <div class="stack">React.js · Redux · Tailwind CSS <span class="link">github.com/Arshanashraf/Ecommerce-webDesign</span></div>
+    <ul>
+      <li>Developed a full e-commerce front end with product filtering, search, pagination, and cart flows driven by Redux.</li>
+      <li>Built dynamic order-summary logic and shipped a production-ready deployment.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Education</h2>
+  <div class="entry">
+    <div class="entry-head">
+      <div>
+        <div class="entry-title">Bachelor of Computer Science</div>
+        <div class="entry-sub">Sindh Madressatul Islam University, Karachi</div>
+      </div>
+      <div class="entry-when">2024 – 2028 (Expected)</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

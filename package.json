@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "node scripts/migrate.mjs",
+    "db:seed-content": "node scripts/seed-content.mjs",
+    "db:install-resume": "node scripts/install-resume.mjs",
     "admin:create": "node scripts/create-admin.mjs",
     "admin:update": "node scripts/update-admin.mjs"
   },
