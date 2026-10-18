@@ -8,21 +8,36 @@ For the full product, UI, architecture, data, security, operations, and launch g
 
 1. Use Node.js 20.9 or later and install the locked dependencies with `npm ci`.
 2. Copy `.env.example` to `.env.local` and set `DATABASE_URL` to a PostgreSQL database and `APP_SECRET` to at least 32 random bytes. No provider is selected in this repository; use a provider whose current terms and free quota fit the intended use.
-3. Run `npm run db:migrate` to create the schema and add the owner-provided project candidates as **draft** sample content.
-4. Run `npm run db:seed-content` to publish the verified projects and the internship entry, and `npm run db:install-resume` to install `docs/cv/Muhammad-Arshan-Ashraf-Siddiqui-Full-Stack-Developer.pdf` as the active résumé. Both scripts are idempotent and read whatever `DATABASE_URL` is set, so they can also be run against a hosted database.
-5. Run `npm run db:status` to confirm which database you are pointed at and that the schema, content, settings, admin account, and résumé are in place. It prints the host and database it resolved from `DATABASE_URL`.
-6. Run `npm run admin:create` in an interactive terminal to create the first owner account. The password is entered without echo. There is no public sign-up. To rotate the password later and revoke all active sessions, run `npm run admin:update`.
-7. Run `npm run dev`.
+3. Run `npm run db:setup`. That one command applies the schema, publishes the verified projects and internship, installs the CV as the active résumé, and creates the owner account. Every step is idempotent, so it is safe to re-run after a failure or against a database that is already in use.
+4. Run `npm run db:status` to confirm which database it resolved from `DATABASE_URL`, and that the environment, schema, content, owner account, and résumé are all in place.
+5. Run `npm run dev`.
+
+To run step 3 without any prompts — needed when pointing a fresh deployment at a hosted database — set `ADMIN_EMAIL` and `ADMIN_PASSWORD` first:
+
+```powershell
+$env:DATABASE_URL = "<hosted connection string>"
+$env:ADMIN_EMAIL = "you@example.com"
+$env:ADMIN_PASSWORD = "<at least 14 characters>"
+npm run db:setup
+```
+
+The individual steps remain available as `db:migrate`, `db:seed-content`, `db:install-resume`, and `db:ensure-admin` if only one is needed.
 
 If `DATABASE_URL` is not configured, local development shows clearly marked sample project cards. In production, project routes only read published database records. A configured database without published projects shows an empty state.
+
+## Deploying
+
+`vercel.json` sets the build command to `npm run build:deploy`, which applies any unapplied migrations and then builds. A migration failure is logged but does not fail the build, because a database that is briefly unreachable or scaled to zero should not block a deployment; the public site already degrades to empty sections instead of erroring. Set `DATABASE_URL` and `APP_SECRET` in the hosting environment, run `npm run db:setup` once against that database, and redeploy.
+
+Do not set `DB_SSL=true` for a local database. Hosted connection strings normally carry `?sslmode=require`, which enables TLS on its own, and turning the flag on against a server without TLS makes every query fail.
 
 ## Environment
 
 - `DATABASE_URL`: PostgreSQL connection string. Keep it server-only.
-- `APP_SECRET`: random server-only secret of at least 32 bytes used to key anonymous rate-limit identifiers.
-- `DB_SSL=true`: enable TLS when required by the selected database. Certificate verification remains enabled unless a provider requires another configuration.
+- `APP_SECRET`: random server-only secret of at least 32 bytes used to key anonymous rate-limit identifiers. Sign-in and the contact form refuse requests while it is missing or shorter than 32 bytes.
+- `DB_SSL=true`: enable TLS when the database requires it and the connection string does not already say so. Certificate verification remains enabled unless a provider requires another configuration.
 - `DB_SSL_REJECT_UNAUTHORIZED=false`: only use when the database provider documents that requirement.
-- `NEXT_PUBLIC_SITE_URL`: canonical public URL for the sitemap when a deployment host has been selected.
+- `NEXT_PUBLIC_SITE_URL`: optional canonical public URL. Falls back to Vercel's production URL, then to the request host.
 
 Never commit `.env.local` or database credentials.
 

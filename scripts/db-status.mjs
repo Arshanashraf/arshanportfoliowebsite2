@@ -53,18 +53,27 @@ const label = (value, expected) => `${String(value).padStart(3)}  ${value === ex
 
 console.log(`Target: ${target}  (${looksLocal ? "local" : "remote"}${process.env.DB_SSL === "true" ? ", ssl" : ""})`);
 console.log("");
-console.log("migrations applied      " + label(rows.migrations, 3));
-console.log("published projects      " + label(rows.published_projects, 4));
-console.log("draft projects          " + String(rows.draft_projects).padStart(3));
-console.log("visible skills          " + label(rows.visible_skills, 37));
-console.log("technologies            " + String(rows.technologies).padStart(3));
-console.log("visible experience      " + label(rows.experiences, 1));
-console.log("visible achievements    " + String(rows.achievements).padStart(3));
-console.log("published posts         " + String(rows.published_posts).padStart(3));
-console.log("retention setting       " + label(rows.retention_setting, 1));
-console.log("admin accounts          " + label(rows.admin_users, 1));
-console.log("active resume           " + label(rows.active_resumes, 1));
+const secretBytes = Buffer.byteLength(process.env.APP_SECRET ?? "");
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL;
+console.log("Environment:");
+console.log("  APP_SECRET            " + (secretBytes >= 32 ? "set" : "MISSING (needs 32+ bytes) — contact form and admin sign-in will refuse requests"));
+console.log("  site URL              " + (siteUrl ? siteUrl : "not set — falls back to Vercel's production URL, or localhost offline"));
+console.log("  DB_SSL                " + (process.env.DB_SSL === "true" ? "on" : "off"));
 console.log("");
-console.log(rows.migrations === 3 && rows.published_projects === 4 && rows.visible_skills === 37 && rows.active_resumes === 1 && rows.retention_setting === 1 && rows.admin_users >= 1
-  ? "This database is ready to serve the public site."
+console.log("Content:");
+console.log("  migrations applied      " + label(rows.migrations, 3));
+console.log("  published projects      " + label(rows.published_projects, 4));
+console.log("  draft projects          " + String(rows.draft_projects).padStart(3));
+console.log("  visible skills          " + label(rows.visible_skills, 37));
+console.log("  technologies            " + String(rows.technologies).padStart(3));
+console.log("  visible experience      " + label(rows.experiences, 1));
+console.log("  visible achievements    " + String(rows.achievements).padStart(3));
+console.log("  published posts         " + String(rows.published_posts).padStart(3));
+console.log("  retention setting       " + label(rows.retention_setting, 1));
+console.log("  admin accounts          " + label(rows.admin_users, 1));
+console.log("  active resume           " + label(rows.active_resumes, 1));
+console.log("");
+const databaseReady = rows.migrations === 3 && rows.published_projects === 4 && rows.visible_skills === 37 && rows.active_resumes === 1 && rows.retention_setting === 1 && rows.admin_users >= 1;
+console.log(databaseReady
+  ? (secretBytes >= 32 ? "This database and environment are ready to serve the public site." : "This database is ready, but APP_SECRET is missing, so the contact form and admin sign-in cannot work.")
   : "This database is not fully set up yet. See the MISSING rows above.");
