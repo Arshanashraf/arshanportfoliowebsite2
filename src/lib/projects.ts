@@ -5,13 +5,25 @@ type ProjectRow = Omit<Project, "placeholder" | "details" | "sections" | "techno
 const projectSelect = `SELECT p.slug,p.title,p.summary,p.context,p.role_scope,p.approach,p.decisions,p.challenges,p.outcome,p.outcome_type,p.is_sample,p.repo_url,p.demo_url,p.currently_building,p.created_at,p.published_at,COALESCE(json_agg(t.name ORDER BY pt.sort_order) FILTER (WHERE t.name IS NOT NULL),'[]'::json) AS technologies FROM projects p LEFT JOIN project_technologies pt ON pt.project_id=p.id LEFT JOIN technologies t ON t.id=pt.technology_id`;
 export async function getPublicProjects(): Promise<Project[]> {
   if (!isDatabaseConfigured()) return process.env.NODE_ENV === "production" ? [] : samples;
-  const { rows } = await database().query<ProjectRow>(`${projectSelect} WHERE p.status='published' GROUP BY p.id ORDER BY p.featured DESC,p.sort_order ASC,p.published_at DESC`);
-  return rows.map(mapProject);
+  try {
+    const { rows } = await database().query<ProjectRow>(`${projectSelect} WHERE p.status='published' GROUP BY p.id ORDER BY p.featured DESC,p.sort_order ASC,p.published_at DESC`);
+    return rows.map(mapProject);
+  } catch (error) {
+    // Same reasoning as the profile records: degrade to an empty list instead of throwing
+    // into a Suspense boundary, which leaves the visitor on the loading skeleton.
+    console.error("Projects unavailable.", error);
+    return [];
+  }
 }
 export async function getPublicProject(slug: string): Promise<Project | undefined> {
   if (!isDatabaseConfigured()) return process.env.NODE_ENV === "production" ? undefined : samples.find((project) => project.slug === slug);
-  const { rows } = await database().query<ProjectRow>(`${projectSelect} WHERE p.status='published' AND p.slug=$1 GROUP BY p.id LIMIT 1`, [slug]);
-  return rows[0] ? mapProject(rows[0]) : undefined;
+  try {
+    const { rows } = await database().query<ProjectRow>(`${projectSelect} WHERE p.status='published' AND p.slug=$1 GROUP BY p.id LIMIT 1`, [slug]);
+    return rows[0] ? mapProject(rows[0]) : undefined;
+  } catch (error) {
+    console.error("Project unavailable.", error);
+    return undefined;
+  }
 }
 function mapProject(row: ProjectRow): Project {
   const sections = [{ label: "Context", content: row.context }, { label: "Role and scope", content: row.role_scope }, { label: "Approach", content: row.approach }, { label: "Key decisions", content: row.decisions }, { label: "Challenges", content: row.challenges }, { label: "Outcome", content: row.outcome }].filter((section) => Boolean(section.content));
