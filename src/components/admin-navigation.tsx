@@ -1,22 +1,31 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
-const items = [
-  ["/admin", "Overview"],
-  ["/admin/projects", "Projects"],
-  ["/admin/skills", "Skills"],
-  ["/admin/experience", "Experience"],
-  ["/admin/achievements", "Achievements"],
-  ["/admin/blog-posts", "Blog posts"],
-  ["/admin/messages", "Messages"],
-  ["/admin/resume", "Résumé"],
-  ["/admin/settings", "Settings"],
-];
+const groups = [
+  {
+    label: "Workspace",
+    items: [["/admin", "Overview"]],
+  },
+  {
+    label: "Content",
+    items: [
+      ["/admin/projects", "Projects"],
+      ["/admin/skills", "Skills"],
+      ["/admin/experience", "Experience"],
+      ["/admin/achievements", "Achievements"],
+      ["/admin/blog-posts", "Blog posts"],
+    ],
+  },
+  { label: "Inbox", items: [["/admin/messages", "Messages"]] },
+  { label: "Library", items: [["/admin/resume", "Résumé"]] },
+  { label: "System", items: [["/admin/settings", "Settings"]] },
+] as const;
 
-export default function AdminNavigation() {
+type AdminNavigationProps = { email?: string; unread?: number };
+
+export default function AdminNavigation({ email, unread = 0 }: AdminNavigationProps) {
   const [error, setError] = useState("");
   const pathname = usePathname();
   const router = useRouter();
@@ -32,16 +41,34 @@ export default function AdminNavigation() {
     }
   }
 
+  const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+
   return (
     <aside className="admin-sidebar">
-      <Link className="admin-brand" href="/">Arshan <span>·</span> Studio</Link>
-      <nav aria-label="Admin navigation">{items.map(([href, label]) => <Link href={href} key={href} aria-current={pathname === href ? "page" : undefined}>{label}</Link>)}</nav>
-      <button className="admin-logout" type="button" onClick={logout}>Sign out ↗</button>
+      <Link className="admin-brand" href="/">
+        <span className="admin-brand-mark" aria-hidden="true"><i /></span>
+        <span>Arshan&nbsp;<b>·</b>&nbsp;Studio</span>
+      </Link>
+      <nav className="admin-nav" aria-label="Admin navigation">
+        {groups.map((group) => (
+          <div className="admin-group" key={group.label}>
+            <span className="admin-group-label">{group.label}</span>
+            {group.items.map(([href, label]) => (
+              <Link href={href} key={href} aria-current={isCurrent(href) ? "page" : undefined}>
+                {label}
+                {href === "/admin/messages" && unread > 0 && (
+                  <span className="admin-nav-badge" aria-label={`${unread} unread`}>{unread}</span>
+                )}
+              </Link>
+            ))}
+          </div>
+        ))}
+      </nav>
+      <div className="admin-session">
+        {email && <span className="admin-session-email" title={email}>{email}</span>}
+        <button className="admin-logout" type="button" onClick={logout}>Sign out ↗</button>
+      </div>
       {error && <p role="alert" className="admin-error">{error}</p>}
     </aside>
   );
 }
-
-
-
-

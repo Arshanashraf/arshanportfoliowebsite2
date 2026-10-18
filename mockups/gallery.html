@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Arshan Ashraf — UI preview gallery (v2)</title>
+<style>
+  :root{--bg:#0c1210;--ink:#e9efea;--muted:#9ba8a2;--line:#22302b;--accent:#63d3a6;--warm:#e8a468}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,"Segoe UI",system-ui,sans-serif;padding:40px clamp(20px,5vw,64px) 80px}
+  header{max-width:1300px;margin:0 auto 34px}
+  h1{margin:0 0 8px;font-size:34px;font-weight:500;letter-spacing:-.03em}
+  h1 span{color:var(--accent)}
+  p{color:var(--muted);margin:0 0 12px;max-width:78ch}
+  h2{margin:52px 0 6px;font-size:13px;font-family:ui-monospace,Consolas,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  h2 + p{margin-bottom:18px;font-size:13.5px}
+  .grid{display:grid;gap:20px;max-width:1300px;margin:0 auto}
+  figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#000}
+  figure img{display:block;width:100%;height:auto}
+  figcaption{padding:12px 16px;font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-top:1px solid var(--line);background:#0f1613}
+  .two{grid-template-columns:1fr 1fr}
+  .note{max-width:1300px;margin:0 auto;border:1px solid var(--line);border-radius:10px;background:#0f1613;padding:18px 22px}
+  .note ul{margin:8px 0 0;padding-left:20px;color:var(--muted);font-size:13.5px}
+  .note li{margin:4px 0}
+  .note b{color:var(--ink);font-weight:500}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:var(--accent)}
+  @media(max-width:900px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Arshan Ashraf — proposed UI <span>preview v2</span></h1>
+  <p>Dark by default, a softened low-glare light theme, theme-aware card edges, an animated application map, and sticky stacking project cards. These are static captures, so motion reads as a single frame — the behaviours are listed below each set.</p>
+</header>
+
+<h2>Dark (default) — sections</h2>
+<p>Cards carry a per-theme edge token, brighter than the internal hairlines, plus an inset top highlight so panels read as raised surfaces rather than flat fills.</p>
+<div class="grid two">
+  <figure><img src="shots/v2/dark-hero.png" alt="Dark hero" /><figcaption>01 · dark · hero, application map, custom cursor</figcaption></figure>
+  <figure><img src="shots/v2/dark-work.png" alt="Dark work" /><figcaption>02 · dark · sticky stacking cards</figcaption></figure>
+  <figure><img src="shots/v2/dark-stack.png" alt="Dark stack" /><figcaption>03 · dark · stats + writing</figcaption></figure>
+  <figure><img src="shots/v2/dark-contact.png" alt="Dark contact" /><figcaption>04 · dark · contact + footer</figcaption></figure>
+</div>
+
+<h2>Light (softened) — sections</h2>
+<p>Paper-toned background, raised cards in near-white, and the accent darkened to <code>#2b6a56</code> so coloured text keeps its contrast on light surfaces.</p>
+<div class="grid two">
+  <figure><img src="shots/v2/light-hero.png" alt="Light hero" /><figcaption>05 · light · hero, application map, custom cursor</figcaption></figure>
+  <figure><img src="shots/v2/light-work.png" alt="Light work" /><figcaption>06 · light · sticky stacking cards</figcaption></figure>
+  <figure><img src="shots/v2/light-stack.png" alt="Light stack" /><figcaption>07 · light · stats + writing</figcaption></figure>
+  <figure><img src="shots/v2/light-contact.png" alt="Light contact" /><figcaption>08 · light · contact + footer</figcaption></figure>
+</div>
+
+<h2>What changed in v2</h2>
+<div class="note">
+  <ul>
+    <li><b>Card edges by theme.</b> New <code>--card-line</code> / <code>--card-edge</code> tokens. Cards (hero panel, project cards, stats, contact band) use a stronger edge than inner dividers, plus an inset highlight. On hover a project card's border warms toward the accent.</li>
+    <li><b>Application map is live.</b> The five connections are now real connector paths: the dashed strokes march along their length, two dots travel each link on a staggered loop, and an arrowhead rides the line rotated to its direction of travel.</li>
+    <li><b>Sticky stacking cards.</b> Each project pins below the header with a small offset, so cards stack as you scroll instead of scrolling past in a bento grid.</li>
+    <li><b>Custom cursor.</b> A 6px accent dot tracks 1:1, a 38px ring trails on a lerp with <code>mix-blend-mode: difference</code>, snaps magnetically to buttons, and shows a contextual label. Disabled on touch devices; text fields keep the native caret.</li>
+    <li><b>Scroll-linked progress.</b> A single CSS custom property drives the top progress bar and section states.</li>
+    <li><b>Reduced motion.</b> Reveals, decode, count-up, marquee, the map flow and the custom cursor all stand down under <code>prefers-reduced-motion</code>, and gradient text is reset so it can never render invisible.</li>
+  </ul>
+</div>
+</body>
+</html>

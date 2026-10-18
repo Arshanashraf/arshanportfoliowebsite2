@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Application map — mockup vs live app</title>
+<style>
+  html,body{margin:0;background:#111614;color:#e9efea;font:13px/1.5 system-ui,sans-serif}
+  .page{display:grid;gap:26px;padding:22px}
+  .row{display:grid;gap:8px}
+  .tag{display:flex;align-items:baseline;gap:10px;font:600 10px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#8fa39a}
+  .tag b{color:#63d3a6;font-weight:600}
+  .tag span{font-weight:400;letter-spacing:.04em;text-transform:none;color:#6c7b74}
+  .stage{position:relative;width:720px;height:450px;overflow:hidden;background:#0c1210;outline:1px solid #2a3833}
+  .stage iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;transform:scale(.5);transform-origin:0 0}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="row">
+    <div class="tag"><b>A · Mockup</b> <span>localhost:4173 — the approved reference</span></div>
+    <div class="stage"><iframe title="mockup dark" src="http://localhost:4173/frame.html?theme=dark&s=0.5&crop=900"></iframe></div>
+  </div>
+  <div class="row">
+    <div class="tag"><b>B · Live app</b> <span>localhost:3000 — rebuilt hero</span></div>
+    <div class="stage"><iframe title="live dark" src="http://localhost:3000/preview-frame.html?s=0.5&h=900&top=0&theme=dark"></iframe></div>
+  </div>
+</div>
+</body>
+</html>

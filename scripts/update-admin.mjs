@@ -3,6 +3,7 @@ import {stdin,stdout} from "node:process";
 import {randomBytes,scrypt as scryptCallback} from "node:crypto";
 import {promisify} from "node:util";
 import pg from "pg";
+process.loadEnvFile(".env.local");
 const scrypt=promisify(scryptCallback);
 async function hiddenInput(prompt){if(!stdin.isTTY||typeof stdin.setRawMode!=="function")throw new Error("Run this command in an interactive terminal so the password is not echoed.");stdout.write(prompt);stdin.setRawMode(true);stdin.resume();return new Promise((resolve,reject)=>{let value="";function finish(error){stdin.setRawMode(false);stdin.pause();stdin.removeListener("data",onData);stdout.write("\n");if(error){reject(error)}else{resolve(value)}}function onData(chunk){for(const char of chunk.toString("utf8")){if(char==="\u0003")return finish(new Error("Cancelled."));if(char==="\r"||char==="\n")return finish();if(char==="\u007f"||char==="\b")value=value.slice(0,-1);else value+=char}}stdin.on("data",onData)})}
 const connectionString=process.env.DATABASE_URL;if(!connectionString)throw new Error("Set DATABASE_URL before updating the owner account.");const prompt=createInterface({input:stdin,output:stdout});let email;try{email=(await prompt.question("Owner email to update: ")).trim().toLowerCase()}finally{prompt.close()}

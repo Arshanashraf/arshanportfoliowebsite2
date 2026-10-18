@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Live app frame</title>
+<style>
+  html,body{margin:0;padding:0;background:#000}
+  #stage{position:absolute;top:0;left:0;transform-origin:0 0}
+  iframe{border:0;display:block;background:#000}
+</style>
+</head>
+<body>
+<div id="stage"><iframe id="f" width="1440" height="5600" scrolling="no"></iframe></div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const scale = Number(q.get("s") || 0.55);
+  const offsetY = Number(q.get("top") || 0);
+  const port = q.get("port") || "3100";
+  const sub = q.get("path") || "/";
+  const height = Number(q.get("h") || 5600);
+  const f = document.getElementById("f");
+  const stage = document.getElementById("stage");
+  f.style.height = height + "px";
+  stage.style.transform = "scale(" + scale + ")";
+  stage.style.top = (-offsetY * scale) + "px";
+  f.src = "http://localhost:" + port + sub;
+</script>
+</body>
+</html>

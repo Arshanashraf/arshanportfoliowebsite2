@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Preview frame</title>
+<style>
+  html,body{margin:0;padding:0;background:#000;}
+  #wrap{position:relative;overflow:hidden;}
+  #stage{position:absolute;top:0;left:0;transform-origin:0 0;}
+  iframe{border:0;display:block;background:#000;}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage"><iframe id="f" width="1440" height="5200" scrolling="no"></iframe></div></div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const theme = q.get("theme") === "light" ? "light" : "dark";
+  const scale = Number(q.get("s") || 1);
+  const crop = q.get("crop") ? Number(q.get("crop")) : 0;   // unscaled px
+  const offsetY = q.get("top") ? Number(q.get("top")) : 0;  // unscaled px
+  const offsetX = q.get("left") ? Number(q.get("left")) : 0; // unscaled px
+  const W = 1440;
+
+  const f = document.getElementById("f");
+  const wrap = document.getElementById("wrap");
+  const stage = document.getElementById("stage");
+
+  function layout() {
+    const d = f.contentDocument;
+    if (!d) return;
+    d.querySelectorAll("[data-reveal]").forEach(el => el.classList.add("in"));
+
+    const foot = d.querySelector("footer");
+    const H = Math.ceil(foot ? foot.getBoundingClientRect().bottom : Math.max(d.documentElement.scrollHeight, d.body.scrollHeight));
+
+    // Scroll progress should match the slice being captured, not the page top
+    const mid = offsetY + (crop || H) / 2;
+    const p = Math.min(1, Math.max(0.03, mid / H));
+
+    // Force every motion state to its end position so the capture is clean
+    const fix = d.createElement("style");
+    fix.textContent = [
+      '[data-reveal],[data-reveal="mask"]{opacity:1!important;transform:none!important;clip-path:none!important;transition:none!important}',
+      '.lines span i,.w i{transform:none!important;transition:none!important}',
+      '.progress{transform:scaleX(' + p.toFixed(4) + ')!important}'
+    ].join("");
+    d.head.appendChild(fix);
+
+    // Freeze decode/count-up text at its final value
+    if (d.defaultView.__revealAll) d.defaultView.__revealAll();
+    if (q.has("cursor") && d.defaultView.__cursorDemo) d.defaultView.__cursorDemo();
+
+    f.height = H;
+    stage.style.transform = "scale(" + scale + ")";
+    stage.style.top = (-offsetY * scale) + "px";
+    stage.style.left = (-offsetX * scale) + "px";
+    wrap.style.width = ((W - offsetX) * scale) + "px";
+    wrap.style.height = ((crop || H) * scale) + "px";
+    document.title = "ready-" + H;
+  }
+
+  f.addEventListener("load", () => setTimeout(layout, 260));
+  f.src = "/index.html?theme=" + theme + "&noscroll=1";
+</script>
+</body>
+</html>
