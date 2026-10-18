@@ -281,10 +281,28 @@ html.cursor-act .cursor-label{opacity:.9}
 .project-map-caption{text-align:center}
 
 @media(max-width:960px){
-  /* Single column: the cards are taller than the viewport here, so pinning them
-     would just stack them exactly on top of one another and hide the content. */
+  /* Single column, and the card is rebuilt for a phone. The diagram becomes a band whose
+     height comes from the viewport and the copy is capped, because the stacking effect is
+     only usable when a whole card fits on screen: a sticky card taller than the viewport
+     pins its own top, and its actions can then never be scrolled into view. */
   .stack-card{grid-template-columns:1fr;position:static}
-  .stack-art{min-height:210px;border-right:0;border-bottom:1px solid var(--card-line)}
+  .stack-art{height:clamp(104px,calc(100vh - 430px),200px);height:clamp(104px,calc(100svh - 430px),200px);
+    min-height:0;padding:10px;border-right:0;border-bottom:1px solid var(--card-line)}
+  .project-map{gap:0;height:100%}
+  .project-map-coordinate,.project-map-caption{display:none}
+  .project-map svg{width:100%;height:100%}
+  .stack-flag{top:auto;right:8px;bottom:8px}
+  .stack-body{gap:9px;padding:18px}
+  .stack-body h3{font-size:clamp(21px,5.4vw,28px)}
+  .stack-body>p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+  .stack-tech{margin-top:0;max-height:26px;overflow:hidden}
+  .stack-actions{gap:12px;margin-top:4px}
+}
+/* Pinning is enabled only where a card genuinely fits, so a short viewport (a phone held
+   sideways, mostly) falls back to the plain single-column list above rather than pinning
+   cards over their own content. The offset clears the 68px header once it has scrolled. */
+@media(max-width:960px) and (min-height:520px){
+  .stack-card{position:sticky;top:calc(78px + var(--i,0) * 5px)}
 }
 @media(prefers-reduced-motion:reduce){
   .scroll-progress{display:none}
